@@ -1,0 +1,93 @@
+
+.container {
+    background-color: #F64401;
+    padding: 0;
+    height: 100vh;
+}
+.mainBox{
+    height: 100%;
+    display: grid;
+    grid-template-areas: "header" "nav" "title" "inputContent";
+    grid-auto-rows: auto auto auto minmax(0%,100%);
+    background-image: url('../../public/assets/auth_backdrop.png');
+    background-repeat: no-repeat, repeat;
+    background-position:  120% 38px; 
+    background-size: 178px 185px;
+}
+.headerItem{
+    grid-area: header;
+}
+.navItem {
+    grid-area: nav;
+}
+.titleItem{
+    grid-area: title;
+}
+.inputContentItem{
+    grid-area: inputContent;
+}
+.statusHeader{
+    height: 42px;
+    background-color: #d63e05;
+}
+.navSection{
+    width: 24px;
+    font-size: 24px;
+    color: white;
+    margin-bottom: 18px;
+    margin-left: 20px;
+}
+.titleSection{
+    color: white;
+    border-left: 5px solid white;
+    padding-left: 16px;
+    padding-top: 8px;
+    padding-bottom: 5px;
+    margin-bottom: 32px;
+}
+.paperSection{
+    border-radius: 93px 0 0;
+    padding: 32px 30px 95px 30px;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+.optionSelected {
+    background-color: #F64401 !important;
+    color: white !important;
+    border-radius: 24px !important;
+    text-transform: none;
+}
+.root {
+    border: none;
+    text-transform: none;
+    font-weight: normal;
+    color: #222222;
+}
+.root:hover {
+    background-color: transparent;
+}
+.label {
+    font-size: 14px;
+}
+.input {
+    padding-bottom: 16px;
+}
+.textCenter{
+    text-align: center;
+}
+.loginFieldBox{
+    height: 100%;
+    margin-top: 37px;
+    display: grid;
+    grid-template-areas: "toggle" "inputField" ;
+}
+.toggleButton{
+    border: 1px solid #F64401;
+    border-radius: 24px;
+}
+.withImageInput{
+    display: flex;
+    align-items: flex-end;
+}

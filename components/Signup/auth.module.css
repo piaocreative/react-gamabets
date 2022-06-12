@@ -1,0 +1,23 @@
+.icon {
+  width: 500px;
+}
+.label {
+  font-size: 14px;
+  padding-bottom: 8px;
+}
+.input {
+  padding-bottom: 8px;
+}
+.pinField {
+  width: 57px;
+}
+.resendOtp {
+  color: #f64401;
+}
+.otpText {
+  text-align: center;
+}
+.phoneInput {
+  padding-bottom: 8px;
+  font-weight: bold;
+}

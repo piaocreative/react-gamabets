@@ -1,0 +1,287 @@
+import React, { useState, useRef, useEffect } from "react";
+import { nanoid } from "nanoid";
+
+import Grid from "@mui/material/Grid";
+import Box from "@mui/material/Box";
+import TextField from "@mui/material/TextField";
+import PermIdentityOutlinedIcon from "@mui/icons-material/PermIdentityOutlined";
+import Typography from "@mui/material/Typography";
+import Button from "@mui/material/Button";
+import { useRouter } from "next/router";
+
+import { AuthTemplate } from "../../components";
+import styles from "./auth.module.css";
+import { textAlign } from "@mui/system";
+import appsApi from "../../api/api";
+import { useAuth } from "../../contexts/AuthContext";
+
+const BACKSPACE = 8;
+const LEFT_ARROW = 37;
+const RIGHT_ARROW = 39;
+const DELETE = 46;
+const SPACEBAR = 32;
+
+const isInputNum = true;
+const isInputSecure = true;
+
+const otplength = 4;
+
+const numValidator = isInputNum ? ["required", "isNumber"] : ["required"];
+const numError = isInputNum ? ["", "not a number"] : [""];
+
+const EnterOtp = ({ moveToNextStep, saveSignupData, signupData }) => {
+  const NoOfInputFields = [...Array(otplength)].map(() => nanoid());
+  let inputType = isInputNum ? "tel" : "text";
+  inputType = isInputSecure ? "password" : inputType;
+  const inputRef = useRef(null);
+  const [activeInput, setActiveInput] = useState(0);
+  const [otpValue, setOtpValue] = useState("");
+  const [displayResendOtp, setDisplayResendOtp] = useState(false);
+  const { notify } = useAuth();
+
+  const isInputValueValid = (value) => {
+    const isTypeValid = isInputNum
+      ? !isNaN(parseInt(value, 10))
+      : typeof value === "string";
+    return isTypeValid && value.trim().length === 1;
+  };
+
+  useEffect(() => {
+    setTimeout(() => {
+      setDisplayResendOtp(true);
+    }, 30 * 1000);
+  }, []);
+
+  // Focus on input by index
+  const focusInput = (input) => {
+    const tempActiveInput = Math.max(Math.min(otplength - 1, input), 0);
+    setActiveInput(tempActiveInput);
+  };
+
+  // Focus on next input
+  const focusNextInput = () => {
+    focusInput(activeInput + 1);
+  };
+
+  // Focus on previous input
+  const focusPrevInput = () => {
+    focusInput(activeInput - 1);
+  };
+
+  // Helper to return OTP from input
+  const handleOtpChange = (otp) => {
+    const tempOtpValue = otp.join("");
+    setOtpValue(tempOtpValue);
+  };
+
+  const getOtpValue = () => (otpValue ? otpValue.toString().split("") : []);
+
+  // Change OTP value at focused input
+  const changeCodeAtFocus = (value) => {
+    const tempOtp = getOtpValue();
+    tempOtp[activeInput] = value[0];
+    handleOtpChange(tempOtp);
+  };
+  // Handle pasted OTP
+  const handleOnPaste = (e) => {
+    e.preventDefault();
+
+    const otp = getOtpValue();
+    let nextActiveInput = activeInput;
+
+    // Get pastedData in an array of max size (num of inputs - current position)
+    const pastedData = e.clipboardData
+      .getData("text/plain")
+      .slice(0, otplength - activeInput)
+      .split("");
+
+    NoOfInputFields.map((value, index) => {
+      if (index >= activeInput && pastedData.length > 0) {
+        otp[index] = pastedData.shift();
+        nextActiveInput += 1;
+      }
+    });
+    setActiveInput(nextActiveInput);
+    focusInput(nextActiveInput);
+    handleOtpChange(otp);
+  };
+
+  // Handle cases of backspace, delete, left arrow, right arrow, space
+  const handleOnKeyDown = (e) => {
+    if (e.keyCode === BACKSPACE || e.key === "Backspace") {
+      e.preventDefault();
+      changeCodeAtFocus("");
+      focusPrevInput();
+    } else if (e.keyCode === DELETE || e.key === "Delete") {
+      e.preventDefault();
+      changeCodeAtFocus("");
+    } else if (e.keyCode === LEFT_ARROW || e.key === "ArrowLeft") {
+      e.preventDefault();
+      focusPrevInput();
+    } else if (e.keyCode === RIGHT_ARROW || e.key === "ArrowRight") {
+      e.preventDefault();
+      focusNextInput();
+    } else if (
+      e.keyCode === SPACEBAR ||
+      e.key === " " ||
+      e.key === "Spacebar" ||
+      e.key === "Space"
+    ) {
+      e.preventDefault();
+    }
+  };
+
+  // The content may not have changed, but some input took place hence change the focus
+  const handleOnInput = (e) => {
+    if (isInputValueValid(e.target.value)) {
+      focusNextInput();
+    } else if (!isInputNum) {
+      // This is a workaround for dealing with keyCode "229 Unidentified" on Android.
+      const { nativeEvent } = e;
+      if (
+        nativeEvent.data === null &&
+        nativeEvent.inputType === "deleteContentBackward"
+      ) {
+        e.preventDefault();
+        changeCodeAtFocus("");
+        focusPrevInput();
+      }
+    }
+  };
+
+  const handleOnChange = (e) => {
+    const { value } = e.target;
+    if (isInputValueValid(value)) {
+      changeCodeAtFocus(value);
+      handleOnInput(e);
+    } else {
+      console.log(" handle Submit", e);
+    }
+  };
+
+  const [loading, setLoading] = useState(false);
+
+  const verifyOtpBtnClick = async (event) => {
+    if (event) event.preventDefault();
+    const completeMobileNumber = signupData.countrycode + signupData.mobile;
+    console.log("submit", { completeMobileNumber, otpValue });
+    if (!otpValue || !completeMobileNumber) return;
+    // Dont verify otp now
+    saveSignupData({ otp: otpValue });
+    moveToNextStep(3);
+    return;
+    // Uncomment the following if need to
+    // setLoading(true);
+    // const res = await appsApi.verifyOtp({
+    //   mobile: `+${completeMobileNumber}`,
+    //   otp: otpValue,
+    // });
+    // console.log(res);
+    // setLoading(false);
+    // if (res) {
+    //   if (res.status === 1) {
+    //     saveSignupData({ otp: otpValue });
+    //     moveToNextStep(3);
+    //     notify({ message: res.message || "Success", isError: false });
+    //   } else {
+    //     notify({ message: res.message || "Error", isError: true });
+    //   }
+    // } else {
+    //   notify({ message: "Unknown Error", isError: true });
+    // }
+  };
+
+  const resendOtpBtnClick = async (event) => {
+    if (event) event.preventDefault();
+    // if (!mobile || !countryCode) return;
+    setLoading(true);
+    // let completeMobile = `+${countryCode.phone}${formatMobile(mobile)}`;
+
+    // const res = await appsApi.getOtp({ mobile: completeMobile });
+    // if (res && res.status === 1) {
+    //   router.push("/auth/enter-otp");
+    // }
+    setLoading(false);
+  };
+  //  const iconContent=
+  return (
+    <AuthTemplate
+      title="Enter OTP"
+      btnLoading={loading}
+      btnTitle="Verify OTP"
+      btnOnClick={verifyOtpBtnClick}
+      isContentCenter={false}
+      handleBackArrowClick={(event) => {
+        event.preventDefault();
+        moveToNextStep(1);
+      }}
+      // iconContent=
+    >
+      <Box
+        sx={{ textAlign: "center", marginTop: "24px", marginBottom: "33px" }}
+      >
+        <Typography
+          // component="h5"
+          variant="subtitle1"
+          sx={{
+            color: "#57758F",
+            // borderLeft: "5px solid white",
+            // padding: "0.5rem 0.5rem",
+          }}
+        >
+          Verification code has been sent to your mobile number. please check
+          and enter OTP.
+        </Typography>
+      </Box>
+      <Box sx={{}}>
+        <Grid container direction="row" justifyContent="center" spacing={2}>
+          {NoOfInputFields.map((value, index) => (
+            <Grid item key={NoOfInputFields[index]}>
+              <TextField
+                autoFocus={index === activeInput}
+                label=""
+                margin="dense"
+                variant="standard"
+                type={inputType}
+                value={otpValue[index]}
+                name={NoOfInputFields[index]}
+                id={NoOfInputFields[index]}
+                inputRef={inputRef}
+                inputProps={{ maxLength: 1, className: styles.otpText }}
+                className={styles.pinField}
+                onKeyDown={handleOnKeyDown}
+                onFocus={(e) => {
+                  setActiveInput(index);
+                  e.target.select();
+                }}
+                onBlur={() => setActiveInput(-1)}
+                onChange={handleOnChange}
+                onPaste={handleOnPaste}
+                // validators=
+                aria-label={`${
+                  index === 0 ? "Please enter verification code. " : ""
+                }${isInputNum ? "Digit" : "Character"} ${index + 1}`}
+              />
+            </Grid>
+          ))}
+        </Grid>
+      </Box>
+      {displayResendOtp && (
+        <Box>
+          <Button
+            disableFocusRipple
+            disableRipple
+            fullWidth
+            variant="onlyText"
+            className={styles.resendOtp}
+            onClick={() => moveToNextStep(1)}
+          >
+            Resend OTP
+          </Button>
+        </Box>
+      )}
+    </AuthTemplate>
+  );
+};
+
+export default EnterOtp;

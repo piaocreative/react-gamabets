@@ -1,0 +1,69 @@
+import React from "react";
+import { ArrowBack } from "@mui/icons-material";
+import Box from '@mui/material/Box';
+import TextField from '@mui/material/TextField';
+import PermIdentityOutlinedIcon from '@mui/icons-material/PermIdentityOutlined';
+import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
+import Typography from "@mui/material/Typography";
+
+import { AuthTemplate } from '../../components';
+// import setMpin from '../../public/assets/set_mpin.png';
+import setMpin from '../../public/assets/set_mpin.png';
+import styles from './auth.module.css'
+
+const Mpin = () => {
+  return <AuthTemplate 
+  title="MPIN Registration" 
+  imageSrc={setMpin} 
+  btnTitle="Submit"
+  isContentCenter={false}
+   >
+    <Box sx={{  textAlign: 'center', marginTop:'18px' }}>
+      <Typography
+        variant="h6"
+        sx={{
+          color: "#222222",
+          fontWeight: 400,
+          paddingBottom:'16px'
+        }}
+      >
+        Set MPIN
+      </Typography>
+    </Box>
+    <Box sx={{  textAlign: 'center' }}>
+      <Typography
+        // component="h5"
+        variant="subtitle1"
+        sx={{
+          color: "#57758F",
+        }}
+      >
+        Please Provide a 4 digit numeric
+        MPIN to protect your account against
+        unauthorised access.
+      </Typography>
+    </Box>
+    <Box sx={{ display: 'flex', alignItems: 'flex-end', marginBottom:'32px' }}>
+      <LockOutlinedIcon sx={{ color: 'action.active', mr: 1, my: 0.5 }} />
+      <TextField
+        fullWidth
+        id="enter-mpin"
+        label="Enter MPIN"
+        variant="standard"
+        InputLabelProps={{ className: styles.label }}
+        InputProps={{ classes: { input: styles.input } }} />
+    </Box>
+    <Box sx={{ display: 'flex', alignItems: 'flex-end' }}>
+      <LockOutlinedIcon sx={{ color: 'action.active', mr: 1, my: 0.5 }} />
+      <TextField
+        fullWidth
+        id="confirm-mpin"
+        label="Confirm MPIN"
+        variant="standard"
+        InputLabelProps={{ className: styles.label }}
+        InputProps={{ classes: { input: styles.input } }} />
+    </Box>
+  </AuthTemplate>
+};
+
+export default Mpin;

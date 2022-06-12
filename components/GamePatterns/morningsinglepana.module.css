@@ -1,0 +1,37 @@
+.icon {
+  width: 500px;
+}
+.label {
+  font-size: 14px;
+}
+.checked {
+  color: "blue";
+}
+
+.checked .Mui-checked {
+  color: blue;
+  /* transform: 'translateX(16px)',
+    color: '#fff',
+    '& + .MuiSwitch-track': {
+      backgroundColor: theme.palette.mode === 'dark' ? '#2ECA45' : '#65C466',
+      opacity: 1,
+      border: 0,
+    },
+    '&.Mui-disabled + .MuiSwitch-track': {
+      opacity: 0.5,
+    }, */
+}
+
+.checked .MuiSwitch-track {
+  color: yellow;
+  /* transform: 'translateX(16px)',
+    color: '#fff',
+    '& + .MuiSwitch-track': {
+      backgroundColor: theme.palette.mode === 'dark' ? '#2ECA45' : '#65C466',
+      opacity: 1,
+      border: 0,
+    },
+    '&.Mui-disabled + .MuiSwitch-track': {
+      opacity: 0.5,
+    }, */
+}

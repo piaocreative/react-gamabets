@@ -1,0 +1,13 @@
+.icon {
+    width: 500px;
+  }
+  .label {
+  font-size: 14px;
+  padding-bottom: 8px;
+}
+.input {
+  padding-bottom: 8px;
+}
+.customIcon path {
+  fill:currentColor;
+}

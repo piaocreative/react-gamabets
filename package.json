@@ -1,0 +1,38 @@
+{
+  "name": "gamabets",
+  "version": "0.0.1",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint",
+    "post-update": "echo \"codesandbox preview only, need an update\" && yarn upgrade --latest"
+  },
+  "dependencies": {
+    "@emotion/cache": "^11.7.1",
+    "@emotion/react": "^11.7.1",
+    "@emotion/server": "^11.4.0",
+    "@emotion/styled": "^11.6.0",
+    "@mui/icons-material": "^5.4.1",
+    "@mui/material": "^5.4.1",
+    "@mui/styles": "^5.4.2",
+    "nanoid": "^3.3.0",
+    "next": "^12.1.0",
+    "prop-types": "^15.8.1",
+    "react": "^17.0.2",
+    "react-dom": "^17.0.2",
+    "react-redux": "^7.2.6",
+    "react-toastify": "^8.2.0",
+    "redux": "^4.1.2",
+    "redux-devtools-extension": "^2.13.9",
+    "redux-thunk": "^2.4.1",
+    "uuid": "^8.3.2"
+  },
+  "devDependencies": {
+    "@types/node": "^17.0.18",
+    "eslint": "latest",
+    "eslint-config-next": "latest",
+    "typescript": "^4.5.5"
+  }
+}

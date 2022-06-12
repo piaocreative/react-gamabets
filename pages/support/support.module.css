@@ -1,0 +1,19 @@
+.icon {
+    width: 500px;
+  }
+  .label {
+    font-size: 14px;
+  }
+  .input {
+    padding-bottom: 16px;
+  }
+  .container {
+    padding: 0;
+    height: 100vh;
+}
+.mainBox{
+  height: 100%;
+  display: grid;
+  grid-auto-rows: min-content auto;
+
+}
